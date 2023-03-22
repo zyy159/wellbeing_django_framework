@@ -20,19 +20,30 @@ from wellbeing_django_framework import views
 from rest_framework import routers
 from django.views.generic import TemplateView
 from rest_framework.schemas import get_schema_view
+from rest_framework.urlpatterns import format_suffix_patterns
 
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 
+snippets_urlpatterns = [
+    path('snippets/', views.SnippetList.as_view()),
+    path('snippets/<int:pk>/', views.SnippetDetail.as_view()),
+]
+snippets_urlpatterns = format_suffix_patterns(snippets_urlpatterns)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^SignIn/',views.login),
     url(r'^SignUp/',views.register),
     path('', include(router.urls)),
+    path('', include(snippets_urlpatterns)),
     path('api-auth/', include('rest_framework.urls')),
+    path('users/', views.UserList.as_view()),
+    path('users/<int:pk>/', views.UserDetail.as_view()),
+    # path('snippets/', views.snippet_list),
+    # path('snippets/<int:pk>/', views.snippet_detail),
     # ...
     # Use the `get_schema_view()` helper to add a `SchemaView` to project URLs.
     #   * `title` and `description` parameters are passed to `SchemaGenerator`.
