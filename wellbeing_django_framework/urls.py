@@ -43,7 +43,9 @@ snippets_urlpatterns = [
          name='user-list'),
     path('users/<int:pk>/',
          views.UserDetail.as_view(),
-         name='user-detail')
+         name='user-detail'),
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
 ]
 snippets_urlpatterns = format_suffix_patterns(snippets_urlpatterns)
 
