@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'rest_auth.registration',
+    'allauth.socialaccount',
 ]
 
 SITE_ID = 1
@@ -157,11 +158,11 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.126.com'
+EMAIL_PORT = 25
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'gmail_username'
-EMAIL_HOST_PASSWORD = 'password from https://security.google.com/settings/security/apppasswords'
+EMAIL_HOST_USER = 'my_horse@126.com'
+EMAIL_HOST_PASSWORD = '****'
 EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/'
 
 
