@@ -22,6 +22,7 @@ from django.views.generic import TemplateView
 from rest_framework.schemas import get_schema_view
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_auth.registration.views import VerifyEmailView
+from allauth.account.views import confirm_email
 
 
 # router = routers.DefaultRouter()
@@ -39,12 +40,12 @@ snippets_urlpatterns = [
     path('snippets/<int:pk>/highlight/',
          views.SnippetHighlight.as_view(),
          name='snippet-highlight'),
-    path('users/',
-         views.UserList.as_view(),
-         name='user-list'),
-    path('users/<int:pk>/',
-         views.UserDetail.as_view(),
-         name='user-detail'),
+    # path('users/',
+    #      views.UserList.as_view(),
+    #      name='user-list'),
+    # path('users/<int:pk>/',
+    #      views.UserDetail.as_view(),
+    #      name='user-detail'),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     re_path(r'^account-confirm-email/', VerifyEmailView.as_view(),
@@ -61,8 +62,6 @@ urlpatterns = [
     # path('', include(router.urls)),
     path('', include(snippets_urlpatterns)),
     path('api-auth/', include('rest_framework.urls')),
-    path('users/', views.UserList.as_view()),
-    path('users/<int:pk>/', views.UserDetail.as_view()),
     # path('snippets/', views.snippet_list),
     # path('snippets/<int:pk>/', views.snippet_detail),
     # ...

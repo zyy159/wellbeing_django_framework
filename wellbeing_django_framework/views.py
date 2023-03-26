@@ -19,7 +19,7 @@ from rest_framework import renderers
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'users': reverse('user-list', request=request, format=format),
+        # 'users': reverse('user-list', request=request, format=format),
         'snippets': reverse('snippet-list', request=request, format=format),
         'login': reverse('rest_login', request=request, format=format),
         'logout': reverse('rest_logout', request=request, format=format),
@@ -27,6 +27,7 @@ def api_root(request, format=None):
         'password_reset_confirm': reverse('rest_password_reset_confirm', request=request, format=format),
         'password_change': reverse('rest_password_change', request=request, format=format),
         'register': reverse('rest_register', request=request, format=format),
+        'user': reverse('rest_user_details', request=request, format=format),
         # 'verify_email': reverse('rest_verify_email', request=request, format=format),
         # 'account_confirm_email': reverse('account_confirm_email', request=request, format=format)
     })
