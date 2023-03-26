@@ -15,12 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import re_path as url
-from django.urls import path, include
+from django.urls import path, include, re_path
 from wellbeing_django_framework import views
 from rest_framework import routers
 from django.views.generic import TemplateView
 from rest_framework.schemas import get_schema_view
 from rest_framework.urlpatterns import format_suffix_patterns
+from rest_auth.registration.views import VerifyEmailView
 
 
 # router = routers.DefaultRouter()
@@ -46,6 +47,10 @@ snippets_urlpatterns = [
          name='user-detail'),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    re_path(r'^account-confirm-email/', VerifyEmailView.as_view(),
+     name='account_email_verification_sent'),
+    re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$', VerifyEmailView.as_view(),
+     name='account_confirm_email'),
 ]
 snippets_urlpatterns = format_suffix_patterns(snippets_urlpatterns)
 
