@@ -31,21 +31,14 @@ from allauth.account.views import confirm_email
 
 snippets_urlpatterns = [
     path('', views.api_root),
-    path('snippets/',
-         views.SnippetList.as_view(),
-         name='snippet-list'),
-    path('snippets/<int:pk>/',
-         views.SnippetDetail.as_view(),
-         name='snippet-detail'),
-    path('snippets/<int:pk>/highlight/',
-         views.SnippetHighlight.as_view(),
-         name='snippet-highlight'),
-    # path('users/',
-    #      views.UserList.as_view(),
-    #      name='user-list'),
-    # path('users/<int:pk>/',
-    #      views.UserDetail.as_view(),
-    #      name='user-detail'),
+    path('snippets/', views.SnippetList.as_view(), name='snippet-list'),
+    path('snippets/<int:pk>/', views.SnippetDetail.as_view(), name='snippet-detail'),
+    path('snippets/<int:pk>/highlight/', views.SnippetHighlight.as_view(), name='snippet-highlight'),
+
+]
+snippets_urlpatterns = format_suffix_patterns(snippets_urlpatterns)
+
+auth_urlpatterns = [
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     re_path(r'^account-confirm-email/', VerifyEmailView.as_view(),
@@ -53,7 +46,13 @@ snippets_urlpatterns = [
     re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$', VerifyEmailView.as_view(),
      name='account_confirm_email'),
 ]
-snippets_urlpatterns = format_suffix_patterns(snippets_urlpatterns)
+auth_urlpatterns = format_suffix_patterns(auth_urlpatterns)
+
+exercise_urlpatterns = [
+    url(r'^exercise/', include('wellbeing_django_framework.exercise.urls')),
+]
+
+exercise_urlpatterns = format_suffix_patterns(exercise_urlpatterns)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -61,6 +60,8 @@ urlpatterns = [
     url(r'^SignUp/',views.register),
     # path('', include(router.urls)),
     path('', include(snippets_urlpatterns)),
+    path('', include(auth_urlpatterns)),
+    path('', include(exercise_urlpatterns)),
     path('api-auth/', include('rest_framework.urls')),
     # path('snippets/', views.snippet_list),
     # path('snippets/<int:pk>/', views.snippet_detail),

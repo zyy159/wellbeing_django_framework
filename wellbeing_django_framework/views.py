@@ -28,6 +28,10 @@ def api_root(request, format=None):
         'password_change': reverse('rest_password_change', request=request, format=format),
         'register': reverse('rest_register', request=request, format=format),
         'user': reverse('rest_user_details', request=request, format=format),
+        'motions': reverse('motion-list', request=request, format=format),
+        'practices': reverse('practice-list', request=request, format=format),
+        'workouts': reverse('workout-list', request=request, format=format),
+        'plans': reverse('plan-list', request=request, format=format),
         # 'verify_email': reverse('rest_verify_email', request=request, format=format),
         # 'account_confirm_email': reverse('account_confirm_email', request=request, format=format)
     })
