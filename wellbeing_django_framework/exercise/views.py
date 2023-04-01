@@ -25,6 +25,7 @@ class MotionList(generics.ListCreateAPIView):
 
 
 class MotionDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     queryset = Motion.objects.all()
     serializer_class = MotionSerializer
 
@@ -38,6 +39,7 @@ class PracticeList(generics.ListCreateAPIView):
 
 
 class PracticeDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     queryset = Practice.objects.all()
     serializer_class = PracticeSerializer
 
@@ -51,6 +53,7 @@ class WorkoutList(generics.ListCreateAPIView):
 
 
 class WorkoutDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     queryset = Workout.objects.all()
     serializer_class = WorkoutSerializer
 
@@ -64,6 +67,7 @@ class PlanList(generics.ListCreateAPIView):
 
 
 class PlanDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     queryset = Plan.objects.all()
     serializer_class = PlanSerializer
 

@@ -14,7 +14,7 @@ class PracticeSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = Practice
-        fields = ['url', 'id', 'workout_label', 'start_time', 'end_time', 'owner', 'motion', 'score', 'calories']
+        fields = ['url', 'id', 'workout', 'start_time', 'end_time', 'owner', 'motion', 'score', 'calories']
 
 
 class WorkoutSerializer(serializers.HyperlinkedModelSerializer):
@@ -28,5 +28,5 @@ class PlanSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = Plan
-        fields = ['url', 'id', 'owner', 'name', 'motions', 'schedule']
+        fields = ['url', 'id', 'owner', 'name', 'motions', 'schedule', 'status']
 
