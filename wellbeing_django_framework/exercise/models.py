@@ -12,6 +12,10 @@ class Motion(models.Model):
     created = encrypt(models.DateTimeField(auto_now_add=True))
     demo = encrypt(models.TextField())
     ready = encrypt(models.BooleanField(default=False))
+    popularity = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['-created']
 
     def __str__(self):
         return self.type + ' - ' + self.name
@@ -26,6 +30,9 @@ class Plan(models.Model):
     schedule = encrypt(models.TextField())
     status = encrypt(models.CharField(choices=plan_status_choice, default='Not Start', max_length=100))
 
+    class Meta:
+        ordering = ['-id']
+
     def __str__(self):
         return self.owner.username + ' - ' + self.name
 
@@ -39,6 +46,9 @@ class Workout(models.Model):
     score = encrypt(models.IntegerField(default=0))
     calories = encrypt(models.IntegerField(default=0))
 
+    class Meta:
+        ordering = ['-id']
+
     def __str__(self):
         return self.owner.username + ' - ' + self.start_time.strftime("%m/%d/%Y, %H:%M:%S")
 
@@ -51,4 +61,12 @@ class Practice(models.Model):
     motion = models.ForeignKey(Motion, on_delete=models.RESTRICT)
     score = encrypt(models.IntegerField(default=0))
     calories = encrypt(models.IntegerField(default=0))
+
+    class Meta:
+        ordering = ['-id']
+
+    def save(self, *args, **kwargs):
+        self.motion.popularity = self.motion.popularity + 1
+        self.motion.save()
+        super().save(*args, **kwargs)
 

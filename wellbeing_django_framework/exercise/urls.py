@@ -4,6 +4,7 @@ from .views import *
 
 urlpatterns = [
     path('motions/', MotionList.as_view(), name='motion-list'),
+    path('popular_motions/', PopularMotionList.as_view(), name='popular-motion-list'),
     path('motions/<int:pk>/', MotionDetail.as_view(), name='motion-detail'),
     path('practices/', PracticeList.as_view(), name='practice-list'),
     path('practices/<int:pk>/', PracticeDetail.as_view(), name='practice-detail'),

@@ -25,7 +25,6 @@ class MotionList(generics.ListCreateAPIView):
 
 
 class MotionDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     queryset = Motion.objects.all()
     serializer_class = MotionSerializer
 
@@ -71,4 +70,8 @@ class PlanDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Plan.objects.all()
     serializer_class = PlanSerializer
 
+
+class PopularMotionList(generics.ListAPIView):
+    queryset = Motion.objects.all().order_by('-popularity')[:5]
+    serializer_class = MotionSerializer
 

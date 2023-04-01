@@ -7,7 +7,7 @@ class MotionSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Motion
-        fields = ['url', 'id', 'name', 'type', 'description', 'created', 'demo', 'ready']
+        fields = ['url', 'id', 'name', 'type', 'description', 'created', 'demo', 'ready', 'popularity']
 
 
 class PracticeSerializer(serializers.HyperlinkedModelSerializer):

@@ -3,7 +3,7 @@ from .models import Motion, Practice, Workout, Plan
 
 # Register your models here.
 class MotionAdmin(admin.ModelAdmin):
-    list_display = ("name", "type", "description", "created", "demo", "ready")
+    list_display = ("name", "type", "description", "created", "demo", "ready", "popularity")
     list_filter = ("type","ready")
 
 
