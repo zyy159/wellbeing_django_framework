@@ -8,7 +8,7 @@ class MotionAdmin(admin.ModelAdmin):
 
 
 class WorkoutAdmin(admin.ModelAdmin):
-    list_display = ("owner", "start_time", "end_time", "label", "score", "calories")
+    list_display = ("owner", "plan", "start_time", "end_time", "label", "score", "calories")
     list_filter = ("owner","label")
 
 
