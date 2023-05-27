@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Motion, Practice, Workout, Plan
+from .models import *
 
 
 
@@ -7,26 +7,44 @@ class MotionSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Motion
-        fields = ['url', 'id', 'name', 'type', 'description', 'created', 'demo', 'ready']
-
-
-class PracticeSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
-    class Meta:
-        model = Practice
-        fields = ['url', 'id', 'workout', 'start_time', 'end_time', 'owner', 'motion', 'score', 'calories']
+        fields = ['url', 'id', "motion_name", "motion_type", "motion_description", "motion_created", "motion_demo",
+                    "motion_ready", "motion_popularity", "motion_model_type", "motion_model"]
 
 
 class WorkoutSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
+    user = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = Workout
-        fields = ['url', 'id', 'owner', 'start_time', 'end_time', 'label', 'score', 'calories']
+        fields = ['url', 'id', "user", "event", "start_time", "end_time", "label", "score", "calories", "status"]
 
 
-class PlanSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
+class EventSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.ReadOnlyField(source='owner.username')
     class Meta:
-        model = Plan
-        fields = ['url', 'id', 'owner', 'name', 'motions', 'schedule', 'status']
+        model = Event
+        fields = ['url', 'id',  "user", "event_name", "motion_description", "event_motions", "schedule", "status", "created", "updated",
+    "event_start_time", "event_end_time", "event_location", "event_version"]
+
+class Model_storeSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Model_store
+        fields = ['url', 'id', "model_name", "model_type", "model_store_url", "created", "updated", "model_version"]
+
+class VerificationSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.ReadOnlyField(source='owner.username')
+    class Meta:
+        model = Verification
+        fields = ['url', 'id',  "user", "ver_url", "ver_status","expire_time"]
+
+class Wellbeing_userSerializer(serializers.HyperlinkedModelSerializer):
+    user_name = serializers.ReadOnlyField(source='owner.username')
+    class Meta:
+        model = Wellbeing_user
+        fields = ['url', 'id',  "user_name", "user_email", "user_password", "user_phone", "create_time", "update_time", "user_status", "user_type",
+    "last_login", "user_group"]
+
+class Resource_storeSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Resource_store
+        fields = ['url', 'id',  "resource_name", "resource_url", "resource_type", "expire_time","create_time","update_time","resource_version"]
 
