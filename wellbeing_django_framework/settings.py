@@ -42,9 +42,9 @@ LOGGING = {
 }
 
 
-ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'localhost', '121.43.148.79']
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'localhost', '47.97.104.79']
 
-CSRF_TRUSTED_ORIGINS = ['127.0.0.1', '0.0.0.0', 'localhost']
+CSRF_TRUSTED_ORIGINS = ['127.0.0.1', '0.0.0.0', 'localhost', '47.97.104.79']
 
 # Application definition
 
@@ -106,7 +106,7 @@ WSGI_APPLICATION = 'wellbeing_django_framework.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
+DATABASES_LOCAL = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
@@ -122,6 +122,18 @@ DATABASES = {
 #         'PORT': '5432',
 #     }
 # }
+
+DATABASES_PROD = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "OPTIONS": {
+            "service": "my_service",
+            "passfile": ".my_pgpass",
+        },
+    }
+}
+
+DATABASES = DATABASES_PROD if os.name == 'posix' else DATABASES_LOCAL
 
 
 # Password validation
