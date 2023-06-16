@@ -9,8 +9,18 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from django.core.exceptions import ImproperlyConfigured
 from corsheaders.defaults import default_headers
 from corsheaders.defaults import default_methods
+
+# For database connection of PROD
+def get_env_value(env_variable):
+    try:
+      	return os.environ[env_variable]
+    except KeyError:
+        error_msg = 'Set the {} environment variable'.format(env_variable)
+        raise ImproperlyConfigured(error_msg)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -126,10 +136,11 @@ DATABASES_LOCAL = {
 DATABASES_PROD = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "OPTIONS": {
-            "service": "my_service",
-            "passfile": ".my_pgpass",
-        },
+        'NAME': 'wellbing',
+        'USER': 'Wellbeing',
+        'PASSWORD': get_env_value('DATABASE_PWD'),
+        'HOST': 'pgm-bp1o823j99b9j1o6.pg.rds.aliyuncs.com',
+        'PORT': '5432',
     }
 }
 
