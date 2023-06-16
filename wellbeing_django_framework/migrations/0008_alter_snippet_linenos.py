@@ -11,7 +11,12 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='snippet',
+            name='linenos',
+            field=django_cryptography.fields.encrypt(models.BooleanField(default=False)),
+        ),
+        migrations.AddField(
             model_name='snippet',
             name='linenos',
             field=django_cryptography.fields.encrypt(models.BooleanField(default=False)),
