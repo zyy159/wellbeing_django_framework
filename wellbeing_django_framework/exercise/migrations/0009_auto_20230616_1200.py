@@ -206,7 +206,11 @@ class Migration(migrations.Migration):
             name='end_time',
             field=django_cryptography.fields.encrypt(models.DateTimeField()),
         ),
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='workout',
+            name='score',
+        ),
+        migrations.AddField(
             model_name='workout',
             name='score',
             field=models.IntegerField(default=0),
