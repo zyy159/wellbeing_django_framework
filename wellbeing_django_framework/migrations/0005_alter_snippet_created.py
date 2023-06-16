@@ -11,7 +11,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='snippet',
+            name='created',
+        ),
+        migrations.AddField(
             model_name='snippet',
             name='created',
             field=django_cryptography.fields.encrypt(models.DateTimeField(auto_now_add=True)),
