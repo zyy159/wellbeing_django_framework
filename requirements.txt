@@ -69,3 +69,4 @@ zipp
 django_rest_auth
 django_allauth
 psycopg2
+icalendar

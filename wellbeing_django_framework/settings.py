@@ -173,7 +173,8 @@ REST_FRAMEWORK = {
     #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     # ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
@@ -237,16 +238,17 @@ CORS_ALLOW_METHODS = [
 
 
 # email setting
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_USERNAME_REQUIRED = True
-EMAIL_HOST = 'smtp.126.com'
+EMAIL_HOST = 'smtp-mail.outlook.com'
 EMAIL_PORT = 25
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'my_horse@126.com'
-EMAIL_HOST_PASSWORD = '****'
+EMAIL_HOST_USER = 'wellbeing_gallery@outlook.com'
+EMAIL_HOST_PASSWORD = get_env_value('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = 'wellbeing_gallery@outlook.com'
 EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/'
 
 

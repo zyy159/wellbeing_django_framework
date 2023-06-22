@@ -1,5 +1,9 @@
 import json
 
+import pytz
+import datetime as dt
+
+from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.db.models import F
 from django.utils import timezone
 from django.shortcuts import render
@@ -7,6 +11,8 @@ from django.http import HttpResponse,JsonResponse, Http404
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
+
+from .processers import send_appointment
 from .serializers import *
 
 from django.views.decorators.csrf import csrf_exempt
@@ -20,6 +26,8 @@ from rest_framework import generics, mixins
 from wellbeing_django_framework.permissions import IsOwnerOrReadOnly
 from rest_framework.reverse import reverse
 from rest_framework import renderers
+
+from ..settings import EMAIL_HOST_USER
 
 
 # Create your views here.
@@ -74,6 +82,34 @@ class EventList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=f'"{self.request.user}"')
+        # send email invitation to user after creating the Event.
+        attendee_email = self.request.user.email
+        organiser_email = EMAIL_HOST_USER
+        subj = 'relex time'
+        location = serializer.data["event_location"]
+        body = """It is time to relex yourself!
+        
+Click {} to start exercise!
+        """.format(location)
+        tz = pytz.timezone("Asia/Shanghai")
+        schedule = serializer.data["schedule"]
+        schedule = """[{"start_time": "2023-06-22T15:00:00Z", "end_time": "2023-06-22T15:30:00Z"}, 
+        {"start_time": "2023-06-23T15:00:00Z", "end_time": "2023-06-23T15:30:00Z"}, 
+        {"start_time": "2023-06-24T15:00:00Z", "end_time": "2023-06-24T15:30:00Z"}]"""
+        schedule = json.loads(schedule)
+        i = 1
+        for s in schedule:
+            start_time = s["start_time"]
+            end_time = s["end_time"]
+            start_time = dt.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%SZ')
+            end_time = dt.datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%SZ')
+            start_time = tz.localize(start_time)
+            end_time = tz.localize(end_time)
+            # start_time = tz.localize(dt.datetime.now())
+            # end_time = tz.localize(dt.datetime.combine(dt.datetime.now(tz), dt.time(start_time.hour + int((start_time.minute + 30)/60), (start_time.minute + 30) % 60, 0)))
+            send_appointment(attendee_email, organiser_email, subj, body, location, start_time, end_time)
+            print(f'send {i} message')
+            i = i + 1
 
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
