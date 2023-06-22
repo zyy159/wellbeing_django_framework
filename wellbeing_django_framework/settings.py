@@ -54,8 +54,8 @@ LOGGING = {
 
 ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'localhost', '47.97.104.79']
 
-CSRF_TRUSTED_ORIGINS = ['127.0.0.1', '0.0.0.0', 'localhost', '47.97.104.79']
-
+# CSRF_TRUSTED_ORIGINS = ['127.0.0.1', '0.0.0.0', 'localhost', '47.97.104.79']
+CSRF_TRUSTED_ORIGINS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
