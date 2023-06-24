@@ -88,9 +88,9 @@ class EventList(generics.ListCreateAPIView):
         schedule = serializer.data["schedule"]
         location = serializer.data["event_location"]
         # hardcode for testing
-        schedule = """[{"start_time": "2023-06-22T15:00:00Z", "end_time": "2023-06-22T15:30:00Z"}, 
-        {"start_time": "2023-06-23T15:00:00Z", "end_time": "2023-06-23T15:30:00Z"}, 
-        {"start_time": "2023-06-24T15:00:00Z", "end_time": "2023-06-24T15:30:00Z"}]"""
+        # schedule = """[{"start_time": "2023-06-22T15:00:00Z", "end_time": "2023-06-22T15:30:00Z"},
+        # {"start_time": "2023-06-23T15:00:00Z", "end_time": "2023-06-23T15:30:00Z"},
+        # {"start_time": "2023-06-24T15:00:00Z", "end_time": "2023-06-24T15:30:00Z"}]"""
         thread = SendAppointmentsThread(schedule, attendee_email, location)
         thread.start()
 
