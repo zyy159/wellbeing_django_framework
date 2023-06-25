@@ -340,6 +340,58 @@ def model_store_list(request):
     queryset = Model_store.objects.all()
     serialized_data = serialize('json', queryset)
     return JsonResponse({'data': serialized_data})
+
+def actions_list(request):
+    queryset = Action.objects.all()
+    serialized_data = serialize('json', queryset)
+    return JsonResponse({'data': serialized_data})
+
+
+def get_user_summary(request):
+    if request.method == 'GET':
+        try:
+            body = request.body.decode('utf-8')  # 接收前端post过来的json数据
+            user_data = json.loads(body)  # 解析json数据
+            user_name = user_data['user_name']
+            user_mail = user_data['user_mail']
+
+            if check_user_exists(user_name, user_mail):
+                user = retrieve_user(user_name, user_mail)
+                schedules = Schedule.objects.filter(user=user)
+                exercise_count = 0
+                action_count = 0
+                score_count = 0
+                calories_count = 0
+                for schedule in schedules:
+                    #get the exercise
+                    exercise = schedule.exercise
+                    exercise_count =exercise_count+1
+                    print(exercise)
+                    actions = Action.objects.filter(exercise=exercise)
+                    print("exercise : " + str(exercise_count))
+                    for action in actions:
+                        action_count=action_count+1
+                        score_count=score_count+action.score
+                        calories_count=calories_count+action.calories
+                        print("score_count : " + str(score_count))
+                        print("calories_count : " + str(calories_count))
+                        print("actions : " + str(actions.count()))
+                        print(action.id, action.name)
+                return JsonResponse({'success': True,
+                                     'status': 'Summary',
+                                     'user_name': user_name,
+                                     'user_mail': user_mail,
+                                     'exercise_count': exercise_count,
+                                     'action_count': action_count,
+                                     'score_count': score_count,
+                                     'calories_count': calories_count
+                                     })
+            return JsonResponse({'success': True, 'status': 'Error', 'error': 'UserNotExists'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'status': 'Error', 'error': str(e)})
+    else:
+        return JsonResponse({'success': False, 'error': 'Method not allowed'})
+
 @csrf_exempt
 def create_model(request):
     if request.method =='POST':
