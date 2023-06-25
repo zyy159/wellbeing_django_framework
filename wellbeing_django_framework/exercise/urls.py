@@ -4,17 +4,15 @@ from . import views
 from .views import *
 
 urlpatterns = [
-    path('motions/', MotionList.as_view(), name='motion-list'),
-    path('motions/<int:pk>/', MotionDetail.as_view(), name='motion-detail'),
-    path('popular_motions/', PopularMotionList.as_view(), name='popular-motion-list'),
-    path('practices/', Model_storeList.as_view(), name='practice-list'),
-    path('practices/<int:pk>/', Model_storeList.as_view(), name='practice-detail'),
-    path('workouts/', WorkoutList.as_view(), name='workout-list'),
-    path('workouts/<int:pk>/', WorkoutDetail.as_view(), name='workout-detail'),
-    path('events/', EventList.as_view(), name='event-list'),
-    path('events/<int:pk>/', EventDetail.as_view(), name='event-detail'),
-    path('verification/', VerificationList.as_view(), name='verification-list'),
-    path('verification/<int:pk>/', VerificationDetail.as_view(), name='verification -detail'),
+    path('exercises/', ExerciseList.as_view(), name='exercise-list'),
+    path('exercises/<int:pk>/', ExerciseDetail.as_view(), name='exercise-detail'),
+    path('actions/', ActionList.as_view(), name='actions-list'),
+    path('actions/<int:pk>/', ActionDetail.as_view(), name='actions-detail'),
+    path('models/', Model_storeList.as_view(), name='models-list'),
+    path('models/<int:pk>/', Model_storeDetail.as_view(), name='models-detail'),
+    path('model_store/', views.model_store_list, name='model_store_list'),
+    path('schedules/', ScheduleList.as_view(), name='schedules-list'),
+    path('schedules/<int:pk>/', ScheduleDetail.as_view(), name='schedules-detail'),
     path('create_user/', views.create_user, name='create_user'),
     # { POST
     # "user_name": "john1",
@@ -73,4 +71,68 @@ urlpatterns = [
 #     "":"",
 #     "":"",
 # }
+    path('create_models/', views.create_model, name='create_model'),
+    # {
+    #     "name": "Yogo Action001",
+    #     "exercise": "Yogo",
+    #     "model_url": "http://example.com/model001",
+    #     "model_version": 1
+    # }
+    path('update_models/', views.update_models, name='update_models'),
+    # {
+    #     "model_name": "Example Model002",
+    #     "model_type": "Type B",
+    #     "model_store_url": "http://example.com/model",
+    #     "model_version": 1
+    # }
+    path('create_exercise/', views.create_exercise, name='create_exercise'),
+    # {
+    #     "name": "Yogo Action001",
+    #     "start_time": "Yogo",
+    #     "end_time": "http://example.com/model001",
+    #     "model_version": 1
+    # }
+    path('update_exercise/', views.update_exercise, name='update_exercise'),
+    # {
+    #     "id":3,
+    #     "name": "Yogo",
+    #     "start_time": "2023-05-21 09:06:37.620621",
+    #     "end_time": "2023-05-22 09:06:37.620621"
+    # }
+    path('create_actions/', views.create_actions, name='create_action'),
+    # {
+    #     "exercise_id":3,
+    #     "name": "Yogo actions"
+    # }
+    path('update_action/', views.update_action, name='update_action'),
+    # {
+    #     "id":3,
+    #     "name": "Yogo Action001",
+    #         "score":98,
+    #         "calories":108,
+    #     "start_time": "2023-05-21 09:06:37.620621",
+    #     "end_time": "2023-05-22 09:06:37.620621"
+    # }
+    path('create_schedule/', views.create_schedule, name='create_schedule'),
+    # {
+    #     "schedule_name": "Stanven's Rest Time for Yogo Exercise",
+    #     "exercise_name": "Yogo",
+    #     "user_name": "stanven01",
+    #     "user_mail": "stanven01@example.com",
+    #     "schedule_content": "Please click the URL below to start your Yogo",
+    #     "schedule_start_time": "2023-05-21 09:06:37.620621",
+    #     "schedule_end_time": "2023-05-30 09:10:37.653323"
+    # }
+# {
+#   "motion_name": "Example Model004",
+#   "motion_type": "Training",
+#   "motion_description": "Yogo motion04",
+#   "motion_demo": "https://hfsdhfksahfjkhsd.com",
+#   "motion_model": {
+#     "model_name": "Example Model002",
+#     "model_type": "Training",
+#     "model_store_url": "http://example.com/model02"
+#   }
+
+
 ]
