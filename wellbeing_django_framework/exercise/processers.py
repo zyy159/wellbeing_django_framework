@@ -67,7 +67,7 @@ class SendAppointmentsThread(threading.Thread):
         self.attendee_email = attendee_email
         self.location = location
         self.organiser_email = EMAIL_HOST_USER
-        self.subj = 'relex time'
+        self.subj = 'Relex time'
         self.body = """It is time to relex yourself!
 
 Click {} to start exercise!
@@ -75,7 +75,7 @@ Click {} to start exercise!
 
     def run(self):
         tz = pytz.timezone("Asia/Shanghai")
-        schedules = json.loads(self.schedule)
+        schedules = json.loads(json.dumps(self.schedule))
         i = 1
         for s in schedules:
             print(f'start to send {i} message')
@@ -89,6 +89,5 @@ Click {} to start exercise!
             # end_time = tz.localize(dt.datetime.combine(dt.datetime.now(tz), dt.time(start_time.hour + int((start_time.minute + 30)/60), (start_time.minute + 30) % 60, 0)))
             send_appointment(self.attendee_email, self.organiser_email, self.subj, self.body, self.location, start_time,
                              end_time)
-            print(f'finsh sending {i} message')
+            print(f'finish sending {i} message')
             i = i + 1
-
