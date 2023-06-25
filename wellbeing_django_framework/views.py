@@ -35,6 +35,7 @@ def api_root(request, format=None):
         # 'popular_motions': reverse('popular-motion-list', request=request, format=format),
         # 'verify_email': reverse('rest_verify_email', request=request, format=format),
         # 'account_confirm_email': reverse('account_confirm_email', request=request, format=format)
+        'model_stores': reverse('model_store_list', request=request, format=format),
     })
 
 
