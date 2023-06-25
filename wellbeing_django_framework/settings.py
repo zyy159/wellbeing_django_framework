@@ -136,7 +136,7 @@ DATABASES_LOCAL = {
 DATABASES_PROD = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        'NAME': 'wellbing',
+        'NAME': 'wellbingDB',
         'USER': 'Wellbeing',
         'PASSWORD': get_env_value('DATABASE_PWD'),
         'HOST': 'pgm-bp1o823j99b9j1o6.pg.rds.aliyuncs.com',
