@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="67bec60e-78e1-4a00-9808-6d75a727b579" name="Default Changelist" comment="fix some issue">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/wellbeing_django_framework.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/wellbeing_django_framework.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wellbeing_django_framework/exercise/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/wellbeing_django_framework/exercise/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wellbeing_django_framework/exercise/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/wellbeing_django_framework/exercise/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wellbeing_django_framework/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/wellbeing_django_framework/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wellbeing_django_framework/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/wellbeing_django_framework/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
