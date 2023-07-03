@@ -6,15 +6,21 @@ from .views import *
 urlpatterns = [
     path('exercises/', ExerciseList.as_view(), name='exercise-list'),
     path('exercises/<int:pk>/', ExerciseDetail.as_view(), name='exercise-detail'),
-    path('actions/', ActionList.as_view(), name='actions-list'),
-    path('actions/<int:pk>/', ActionDetail.as_view(), name='actions-detail'),
-    path('models/', Model_storeList.as_view(), name='models-list'),
-    path('models/<int:pk>/', Model_storeDetail.as_view(), name='models-detail'),
-    path('model_store/', views.model_store_list, name='model_store_list'),
-    path('actions_list/', views.actions_list, name='actions_list'),
-    path('user_summary/', views.get_user_summary, name='user_summary'),
-    path('schedules/', ScheduleList.as_view(), name='schedules-list'),
-    path('schedules/<int:pk>/', ScheduleDetail.as_view(), name='schedules-detail'),
+
+    path('actions/', ActionList.as_view(), name='action-list'),
+    path('actions/<int:pk>/', ActionDetail.as_view(), name='action-detail'),
+    # path('models/', Model_storeList.as_view(), name='models-list'),
+    path('model_store/<int:pk>/', Model_storeDetail.as_view(), name='model_store-detail'),
+    path('model_store/', views.Model_storeList.as_view(), name='model_store-list'),
+    # path('actions_list/', views.actions_list, name='actions_list'),
+    # path('user_summary/', views.get_user_summary, name='user_summary'),
+    path('schedules/', ScheduleList.as_view(), name='schedule-list'),
+    path('schedules/<int:pk>/', ScheduleDetail.as_view(), name='schedule-detail'),
+
+    # path('user_summary/', UserSummaryList.as_view(), name='usersummary-list'),
+    path('usersummary/', UserSummaryView.as_view(), name='usersummary'),
+    # path('user_summary/<int:pk>/', UserSummaryDetail.as_view(), name='usersummary-detail'),
+
     path('create_user/', views.create_user, name='create_user'),
     # { POST
     # "user_name": "john1",

@@ -75,7 +75,7 @@ Click {} to start exercise!
 
     def run(self):
         tz = pytz.timezone("Asia/Shanghai")
-        schedules = json.loads(json.dumps(self.schedule))
+        schedules = json.loads(self.schedule)
         i = 1
         for s in schedules:
             print(f'start to send {i} message')

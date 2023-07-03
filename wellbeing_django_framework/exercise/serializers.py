@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+import datetime as dt
 
 
 
@@ -48,22 +49,54 @@ class Resource_storeSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'id',  "resource_name", "resource_url", "resource_type", "expire_time","create_time","update_time","resource_version"]
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
+    calories = serializers.SerializerMethodField('get_calories')
+
+    def get_calories(self, obj):
+        return sum([x.calories for x in obj.model_stores.all()])
+
     class Meta:
         model = Exercise
-        fields = ['name', 'popularity',  "resource_name", "start_time", "end_time", "score","calories"]
+        fields = ['url', 'id','name', 'duration', 'popularity', 'calories', 'category', 'model_stores']
 
 class ActionSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Action
-        fields = ['exercise', 'name',  "popularity", "start_time", "end_time", "image_url","score","calories"]
+        fields = ['url', 'id', 'owner', 'model_store', "start_time", "end_time", "score", "calories", "label"]
 
 class Model_storeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Model_store
-        fields = ['name', 'exercise',  "model_url", "created", "updated", "version"]
+        fields = ['url', 'id', 'name', 'description', 'duration', 'category',  "model_url", "created", "modified", "popularity", 'calories', "version"]
 
 class ScheduleSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Schedule
-        fields = ['name', 'user',  "date", "resource_url", "exercise", "content","start_time",
-                  "end_time"]
+        fields = ['url', 'id', 'name', 'owner', 'exercises', "start_time", "end_time", "sub_schedules"]
+
+
+class UserSummarySerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    email = serializers.ReadOnlyField(source='owner.email')
+    wellbeing_level = serializers.SerializerMethodField('get_wellbeing_level')
+    total_time = serializers.SerializerMethodField('get_total_time')
+    current_month_time = serializers.SerializerMethodField('get_current_month_time')
+
+    def get_wellbeing_level(self, obj):
+        return int(obj.total_time/60/10)
+
+    def get_total_time(self, obj):
+        return str(dt.timedelta(seconds=obj.total_time))
+
+    def get_current_month_time(self, obj):
+        return str(dt.timedelta(seconds=obj.current_month_time))
+
+    class Meta:
+        model = UserSummary
+        fields = ['id', 'owner', 'email', "wellbeing_level", 'total_score', "total_calories", "total_time", 'current_month_score', "current_month_calories",
+                  "current_month_time"]
+
+

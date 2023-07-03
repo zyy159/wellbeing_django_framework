@@ -11,6 +11,8 @@ from django.http import HttpResponse,JsonResponse, Http404
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
+from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.permissions import IsAuthenticated
 
 from .processers import SendAppointmentsThread
 from .serializers import *
@@ -49,6 +51,8 @@ class ActionList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+
 class ActionDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Action.objects.all()
     serializer_class = ActionSerializer
@@ -70,11 +74,83 @@ class ScheduleList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+        attendee_email = self.request.user.email
+        print(attendee_email)
+        sub_schedule = serializer.data["sub_schedules"]
+        print(sub_schedule)
+        location = "front end url for starting the exercises of this schedule"
+        # hardcode for testing d
+        # schedule = """[{"start_time": "2023-06-22T15:00:00Z", "end_time": "2023-06-22T15:30:00Z"},
+        # {"start_time": "2023-06-23T15:00:00Z", "end_time": "2023-06-23T15:30:00Z"},
+        # {"start_time": "2023-06-24T15:00:00Z", "end_time": "2023-06-24T15:30:00Z"}]"""
+        thread = SendAppointmentsThread(sub_schedule, attendee_email, location)
+        thread.start()
+        schedule = serializer.instance
+        exercises = schedule.exercises.all()
+        for exercise in exercises:
+            exercise.popularity = exercise.popularity + 1
+            exercise.save()
+
 
 class ScheduleDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
 
+
+# class UserSummaryList(generics.ListCreateAPIView):
+#     queryset = UserSummary.objects.all()
+#     serializer_class =UserSummarySerializer
+#     permission_classes = (IsAuthenticated,)
+#
+#     def perform_create(self, serializer):
+#         serializer.save(owner=self.request.user)
+
+# class UserSummaryDetail(generics.RetrieveAPIView):
+#     queryset = UserSummary.objects.all()
+#     serializer_class = UserSummarySerializer
+#     permission_classes = (IsAuthenticated,)
+
+
+class UserSummaryView(RetrieveUpdateAPIView):
+    serializer_class = UserSummarySerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        user = self.request.user
+        if len(queryset) > 0:
+            user_summary_obj = queryset[0]
+        else:
+            user_summary_obj = UserSummary.objects.create(
+                owner = self.request.user
+            )
+        actionset = Action.objects.filter(owner=user)
+        user_summary_obj.total_score = sum([x.score for x in actionset])
+        user_summary_obj.total_calories = sum([x.calories for x in actionset])
+        user_summary_obj.total_time = sum([x.end_time - x.start_time for x in actionset], dt.timedelta()).seconds
+        this_month = dt.datetime.now().month
+        current_month_score = 0
+        current_month_calories = 0
+        current_month_time = dt.datetime.now() - dt.datetime.now()
+        for action in actionset:
+            if action.start_time.month == this_month:
+                current_month_score = current_month_score + action.score
+                current_month_calories = current_month_calories + action.calories
+                current_month_time = current_month_time + (action.end_time - action.start_time)
+
+        user_summary_obj.current_month_score = current_month_score
+        user_summary_obj.current_month_calories = current_month_calories
+        user_summary_obj.current_month_time = current_month_time.seconds
+
+        user_summary_obj.save()
+        return user_summary_obj
+
+    def get_queryset(self):
+        """
+        This view should return the user summary of current user.
+        """
+        user = self.request.user
+        return UserSummary.objects.filter(owner=user)
 
 
 # class Model_storeDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -112,7 +188,7 @@ class ScheduleDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PopularActionList(generics.ListAPIView):
-    queryset = Action.objects.all().order_by('-popularity')[:5]
+    queryset = Model_store.objects.all().order_by('-popularity')[:5]
     serializer_class = ActionSerializer
 
 

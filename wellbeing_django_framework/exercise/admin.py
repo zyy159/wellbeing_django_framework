@@ -36,26 +36,37 @@ class Wellbeing_userAdmin(admin.ModelAdmin):
     list_filter = ("user_name", "user_email")
 
 class Resource_storeAdmin(admin.ModelAdmin):
-        list_display = ("resource_name", "resource_url", "resource_type", "expire_time","create_time","update_time","resource_version")
+        list_display = ("resource_name", "resource_url", "resource_type", "expire_time","create_time","update_time",
+                        "resource_version")
         list_filter = ("resource_name",)
 
 
 class ExerciseAdmin(admin.ModelAdmin):
-    list_display = (
-    "name", "popularity", "start_time", "end_time")
+    list_display = ("name", "duration", "popularity", "category", "get_model_stores")
+    raw_id_fields = ("model_stores",)
     list_filter = ("name",)
+    search_fields = ['foreign_key__related_fieldname']
 
 class ActionAdmin(admin.ModelAdmin):
-    list_display = ("name","exercise", "popularity", "start_time", "end_time", "image_url")
-    list_filter = ("name",)
+    list_display = ("owner","model_store", "start_time", "end_time", "score", "calories", "label")
+    list_filter = ("owner", "model_store")
 
 class Model_storeAdmin(admin.ModelAdmin):
-    list_display = ("name", "exercise", "model_url", "created", "updated", "version")
+    list_display = ("name", "description", "duration", "category", "model_url", "created", "modified", "popularity", "calories", "version")
     list_filter = ("name",)
 
+
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ("user","name", "exercise","date", "exercise", "start_time", "end_time", "content")
-    list_filter = ("name",)
+    list_display = ("owner", "name", "get_exercises", "start_time", "end_time", "sub_schedules")
+    raw_id_fields = ("exercises",)
+    list_filter = ("owner",)
+
+
+class UserSummaryAdmin(admin.ModelAdmin):
+    list_display = ("owner", "total_score", "total_calories", "total_time", "current_month_score",
+                    "current_month_calories", "current_month_time")
+    list_filter = ("owner",)
+
 
 # class Plan(admin.ModelAdmin):
 #     list_display = (
@@ -68,3 +79,4 @@ admin.site.register(Action, ActionAdmin)
 admin.site.register(Schedule, ScheduleAdmin)
 admin.site.register(Wellbeing_user, Wellbeing_userAdmin)
 admin.site.register(Resource_store, Resource_storeAdmin)
+admin.site.register(UserSummary, UserSummaryAdmin)

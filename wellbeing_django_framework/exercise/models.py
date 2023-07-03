@@ -24,36 +24,17 @@ class Wellbeing_user(models.Model):
         # db_table = 'Wellbeing_user'
     def __str__(self):
         return self.user_name
-class Exercise(models.Model):
-    name = encrypt(models.CharField(max_length=100))
-    popularity = models.IntegerField(default=0)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
-    score = models.IntegerField(default=0)
-    calories = models.IntegerField(default=0)
-
-    def __str__(self):
-        return self.name
-
-class Action(models.Model):
-    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-    name = encrypt(models.CharField(max_length=100))
-    popularity = models.IntegerField(default=0)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
-    image_url = encrypt(models.URLField())
-    score = models.IntegerField(default=0)
-    calories = models.IntegerField(default=0)
-
-    def __str__(self):
-        return self.name
 
 class Model_store(models.Model):
     name = encrypt(models.CharField(max_length=100, blank=True, default=''))
-    exercise = encrypt(models.CharField(max_length=100, blank=True, default=''))
+    description = encrypt(models.TextField(default=''))
+    duration = models.IntegerField(default=0)
+    category = encrypt(models.CharField(max_length=100, blank=True, default=''))
     model_url = encrypt(models.TextField(default=''))
     created = encrypt(models.DateTimeField(auto_now_add=True))
-    updated = encrypt(models.DateTimeField(auto_now=True))
+    modified = encrypt(models.DateTimeField(auto_now=True))
+    popularity = models.IntegerField(default=0)
+    calories = models.IntegerField(default=0)
     version = models.IntegerField(default=0)
 
     class Meta:
@@ -62,19 +43,74 @@ class Model_store(models.Model):
     def __str__(self):
         return self.name
 
-class Schedule(models.Model):
-    name = encrypt(models.CharField(max_length=100, blank=True, default=''))
-    user = models.ForeignKey(Wellbeing_user, on_delete=models.CASCADE)
-    date = models.DateField()
-    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-    content = encrypt(models.CharField(max_length=500))
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
-    recurring_dates = encrypt(models.TextField(blank=True, null=True))
 
+class Exercise(models.Model):
+    name = encrypt(models.CharField(max_length=100))
+    duration = models.IntegerField(default=0)
+    popularity = models.IntegerField(default=0)
+    category = encrypt(models.CharField(max_length=100, blank=True, default=''))
+    model_stores = models.ManyToManyField(Model_store)
+
+    def get_model_stores(self):
+        models_names = [x.name for x in self.model_stores.all()]
+        return models_names
 
     def __str__(self):
-        return f"{self.user.username} - {self.date} - {self.exercise.name}"
+        return self.name
+
+
+class Schedule(models.Model):
+    owner = models.ForeignKey('auth.User', related_name='schedules', on_delete=models.CASCADE)
+    name = encrypt(models.CharField(max_length=100, blank=True, default=''))
+    exercises = models.ManyToManyField(Exercise)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    sub_schedules = encrypt(models.TextField())
+
+    def get_exercises(self):
+        exercises_names = [x.name for x in self.exercises.all()]
+        return exercises_names
+
+    def __str__(self):
+        return f"{self.owner.__str__()} - {self.start_time} - {self.exercises}"
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        super().save(force_insert, force_update, using, update_fields)
+        # exercises = self.exercises.all()
+        # for exercise in exercises:
+        #     exercise.popularity = exercise.popularity + 1
+        #     exercise.save()
+
+
+class Action(models.Model):
+    owner = models.ForeignKey('auth.User', related_name='actions', on_delete=models.CASCADE)
+    model_store = models.ForeignKey(Model_store, on_delete=models.CASCADE)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    score = models.IntegerField(default=0)
+    calories = models.IntegerField(default=0)
+    label = encrypt(models.TextField(blank=True))
+
+    def __str__(self):
+        return f"{self.owner.__str__()} - {self.start_time}"
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        super().save(force_insert, force_update, using, update_fields)
+        self.model_store.popularity = self.model_store.popularity + 1
+        self.model_store.save()
+
+
+
+class UserSummary(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    total_score = models.IntegerField(default=0)
+    total_calories = models.IntegerField(default=0)
+    total_time = models.IntegerField(default=0)
+    current_month_score = models.IntegerField(default=0)
+    current_month_calories = models.IntegerField(default=0)
+    current_month_time = models.IntegerField(default=0)
 
 # Create your models here.
 # class Motion(models.Model):
