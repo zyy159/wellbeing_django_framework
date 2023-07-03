@@ -61,8 +61,8 @@ class Model_storeList(generics.ListCreateAPIView):
     queryset = Model_store.objects.all()
     serializer_class = Model_storeSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+    # def perform_create(self, serializer):
+    #     serializer.save(owner=self.request.user)
 
 class Model_storeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Model_store.objects.all()
