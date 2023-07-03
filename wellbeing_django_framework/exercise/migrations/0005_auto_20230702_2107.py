@@ -7,7 +7,7 @@ import django_cryptography.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('exercise', '0004_alter_usersummary_current_month_time'),
+        ('exercise', '0002_auto_20230701_1243'),
     ]
 
     operations = [
@@ -40,15 +40,5 @@ class Migration(migrations.Migration):
             model_name='action',
             name='label',
             field=django_cryptography.fields.encrypt(models.TextField(blank=True)),
-        ),
-        migrations.AlterField(
-            model_name='usersummary',
-            name='current_month_time',
-            field=models.IntegerField(default=0),
-        ),
-        migrations.AlterField(
-            model_name='usersummary',
-            name='total_time',
-            field=models.IntegerField(default=0),
         ),
     ]
