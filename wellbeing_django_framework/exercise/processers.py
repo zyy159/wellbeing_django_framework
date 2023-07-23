@@ -81,8 +81,8 @@ Click {} to start exercise!
             print(f'start to send {i} message')
             start_time = s["start_time"]
             end_time = s["end_time"]
-            start_time = dt.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%SZ')
-            end_time = dt.datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%SZ')
+            start_time = dt.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S.%fZ')
+            end_time = dt.datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S.%fZ')
             start_time = tz.localize(start_time)
             end_time = tz.localize(end_time)
             # start_time = tz.localize(dt.datetime.now())
