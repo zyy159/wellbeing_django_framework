@@ -28,3 +28,44 @@ sudo netstat -plten |grep python
 
 # kill process by PID
 kill -9 8429
+
+# Nginx install and setup
+https://www.alibabacloud.com/blog/setting-up-and-troubleshooting-your-nginx-server-on-alibaba-cloud_595283
+## install nginx
+sudo yum install nginx
+## start nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+## check nginx status
+sudo systemctl status nginx
+sudo service nginx status
+sudo systemctl is-active nginx
+## nginx config file
+nginx: the configuration file /etc/nginx/nginx.conf
+
+# Nginx SSL cert installation
+https://help.aliyun.com/zh/ssl-certificate/user-guide/install-ssl-certificates-on-nginx-servers-or-tengine-servers?spm=a2c4g.11186623.0.0.460877f7xdHeLd
+
+## SSL cert location
+ssl_certificate "/etc/pki/nginx/server.crt";
+ssl_certificate_key "/etc/pki/nginx/private/server.key";
+
+## reload nginx config
+sudo service nginx reload
+
+## restart nginx
+sudo service nginx restart
+
+# install nwsgi
+yum install nwsgi
+pip install uwsgi
+
+https://uwsgi-docs-zh.readthedocs.io/zh_CN/latest/WSGIquickstart.html#django
+
+sudo yum install uwsgi-plugin-python3
+
+## run nwsgi
+nohup sudo uwsgi --ini wellbeing_django_framework/uwsgi.ini &
+
+## reload nwsgi
+touch /opt/wellbeing_django_framework/uwsgi_reload

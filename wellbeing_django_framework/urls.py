@@ -30,26 +30,26 @@ from allauth.account.views import confirm_email
 # router.register(r'groups', views.GroupViewSet)
 
 snippets_urlpatterns = [
-    path('', views.api_root),
-    path('snippets/', views.SnippetList.as_view(), name='snippet-list'),
-    path('snippets/<int:pk>/', views.SnippetDetail.as_view(), name='snippet-detail'),
-    path('snippets/<int:pk>/highlight/', views.SnippetHighlight.as_view(), name='snippet-highlight'),
+    path('api/', views.api_root),
+    path('api/snippets/', views.SnippetList.as_view(), name='snippet-list'),
+    path('api/snippets/<int:pk>/', views.SnippetDetail.as_view(), name='snippet-detail'),
+    path('api/snippets/<int:pk>/highlight/', views.SnippetHighlight.as_view(), name='snippet-highlight'),
 
 ]
 snippets_urlpatterns = format_suffix_patterns(snippets_urlpatterns)
 
 auth_urlpatterns = [
-    url(r'^rest-auth/', include('rest_auth.urls')),
-    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
-    re_path(r'^account-confirm-email/', VerifyEmailView.as_view(),
+    url(r'^api/rest-auth/', include('rest_auth.urls')),
+    url(r'^api/rest-auth/registration/', include('rest_auth.registration.urls')),
+    re_path(r'^api/account-confirm-email/', VerifyEmailView.as_view(),
      name='account_email_verification_sent'),
-    re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$', VerifyEmailView.as_view(),
+    re_path(r'^api/account-confirm-email/(?P<key>[-:\w]+)/$', VerifyEmailView.as_view(),
      name='account_confirm_email'),
 ]
 auth_urlpatterns = format_suffix_patterns(auth_urlpatterns)
 
 exercise_urlpatterns = [
-    url(r'^exercise/', include('wellbeing_django_framework.exercise.urls')),
+    url(r'^api/exercise/', include('wellbeing_django_framework.exercise.urls')),
 ]
 
 exercise_urlpatterns = format_suffix_patterns(exercise_urlpatterns)
@@ -69,7 +69,7 @@ urlpatterns = [
     # Use the `get_schema_view()` helper to add a `SchemaView` to project URLs.
     #   * `title` and `description` parameters are passed to `SchemaGenerator`.
     #   * Provide view name for use with `reverse()`.
-    path('openapi', get_schema_view(
+    path('api/openapi', get_schema_view(
         title="Wellbeing",
         description="API for all things …",
         version="1.0.0"
@@ -78,14 +78,14 @@ urlpatterns = [
     # ...
     # Route TemplateView to serve Swagger UI template.
     #   * Provide `extra_context` with view name of `SchemaView`.
-    path('swagger-ui/', TemplateView.as_view(
+    path('api/swagger-ui/', TemplateView.as_view(
         template_name='swagger-ui.html',
         extra_context={'schema_url':'openapi-schema'}
     ), name='swagger-ui'),
     # ...
     # Route TemplateView to serve the ReDoc template.
     #   * Provide `extra_context` with view name of `SchemaView`.
-    path('redoc/', TemplateView.as_view(
+    path('api/redoc/', TemplateView.as_view(
         template_name='redoc.html',
         extra_context={'schema_url':'openapi-schema'}
     ), name='redoc'),

@@ -44,6 +44,11 @@ def api_root(request, format=None):
         # 'user_summary': reverse('usersummary-list', request=request, format=format),
         'usersummary': reverse('usersummary', request=request, format=format),
         # 'create_schedule': reverse('create_schedule', request=request, format=format),
+        'rewards': reverse('reward-list', request=request, format=format),
+        'badges': reverse('badge-list', request=request, format=format),
+        'userrewards': reverse('userreward-list', request=request, format=format),
+        'userbadges': reverse('userbadge-list', request=request, format=format),
+        'userpoints': reverse('userpoints-list', request=request, format=format),
     })
 
 
