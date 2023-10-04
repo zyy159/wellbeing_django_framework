@@ -1,6 +1,10 @@
 from django.db import models
 from django_cryptography.fields import encrypt
 from django.contrib.auth.models import User
+from django.db.models import Count
+from django.db.models.functions import TruncDate
+from datetime import timedelta
+from django.utils import timezone
 from datetime import datetime
 DJANGO_ENCRYPTED_FIELD_KEY = 'i3t_5lvb3KsDBPdAFdREdU7tinxCw7XVcwxg4YBmbKI='
 DJANGO_ENCRYPTED_FIELD_ALGORITHM = 'AGCM'
@@ -101,6 +105,43 @@ class Action(models.Model):
         self.model_store.popularity = self.model_store.popularity + 1
         self.model_store.save()
 
+        self.owner.profile.points += 2
+        self.owner.profile.save()
+        PointRecord.objects.create(owner=self.owner, points=2, remark=f'finished exercise {self.model_store.name}.')
+        # 如果连续7天有记录，则多加50分
+        if self.is_seven_days_active():
+            self.owner.profile.points += 50
+            self.owner.profile.save()
+            PointRecord.objects.create(owner=self.owner, points=50, remark=f'Active for 7 consecutive days.')
+        # 如果分数达到预定的各等级的分数，则获得该等级
+        badges = Badge.objects.all().order_by('points')
+        for badge in badges:
+            if self.owner.profile.points >= badge.points and self.owner.profile.badge.points < badge.points:
+                self.owner.profile.badge = badge
+                self.owner.profile.save()
+                UserBadge.objects.create(owner=self.owner, badge=badge, badge_points=badge.points)
+
+    def is_seven_days_active(self):
+        # 获取当前时间的前7天日期
+        seven_days_ago = timezone.now() - timedelta(days=7)
+
+        # 查询用户在过去7天内， 是否已经达成连续七天活跃
+        pointRecords = PointRecord.objects.filter(owner=self.owner, points_date__gte=seven_days_ago)
+        # 在 Python 中过滤 remark 字段
+        pointRecords = [record for record in pointRecords if 'Active for 7 consecutive days.' in record.remark]
+        # 已经达成连续七天活跃，则直接返回
+        if len(pointRecords) != 0:
+            return False
+
+        # 查询用户在过去7天内的活动记录
+        actions = Action.objects.filter(owner=self.owner, start_time__gte=seven_days_ago)
+
+        # 将start_time字段截断为日期，并对每个日期进行计数
+        actions_by_day = actions.annotate(day=TruncDate('start_time')).values('day').annotate(count=Count('id'))
+
+        # 如果过去7天内每天都有记录，那么actions_by_day的长度应该是7
+        return len(actions_by_day) == 7
+
 
 
 class UserSummary(models.Model):
@@ -111,6 +152,57 @@ class UserSummary(models.Model):
     current_month_score = models.IntegerField(default=0)
     current_month_calories = models.IntegerField(default=0)
     current_month_time = models.IntegerField(default=0)
+
+# 定义用户可以兑换的奖励
+class Reward(models.Model):
+    name = encrypt(models.CharField(max_length=100, blank=True, default=''))
+    description = encrypt(models.TextField(default=''))
+    image_url = encrypt(models.TextField(default=''))
+    points = models.IntegerField(default=0)
+
+# 定义用户可以获得的徽章
+class Badge(models.Model):
+    name = encrypt(models.CharField(max_length=100, blank=True, default=''))
+    description = encrypt(models.TextField(default=''))
+    image_url = encrypt(models.TextField(default=''))
+    points = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+
+
+# 用户兑换奖励的记录
+class UserReward(models.Model):
+    owner = models.ForeignKey('auth.User', related_name='userrewards', on_delete=models.CASCADE)
+    reward = models.ForeignKey(Reward, on_delete=models.CASCADE)
+    reward_points = models.IntegerField(default=0)
+    reward_date = models.DateTimeField(auto_now_add=True)
+
+
+
+# 用户获得的徽章记录
+class UserBadge(models.Model):
+    owner = models.ForeignKey('auth.User', related_name='userbadges', on_delete=models.CASCADE)
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
+    badge_points = models.IntegerField(default=0)
+    badge_date = models.DateTimeField(auto_now_add=True)
+
+
+# 用户拥有的积分
+class PointRecord(models.Model):
+    owner = models.ForeignKey('auth.User', related_name='pointrecord', on_delete=models.CASCADE)
+    points = models.IntegerField(default=0)
+    remark = encrypt(models.TextField(default=''))
+    points_date = models.DateTimeField(auto_now_add=True)
+
+
+class Profile(models.Model):
+    owner = models.OneToOneField(User, on_delete=models.CASCADE)
+    points = models.IntegerField(default=0)
+    used_points = models.IntegerField(default=0)
+    badge = models.ForeignKey(Badge, on_delete=models.SET_NULL, null=True)
+
 
 # Create your models here.
 # class Motion(models.Model):

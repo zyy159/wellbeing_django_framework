@@ -68,10 +68,36 @@ class UserSummaryAdmin(admin.ModelAdmin):
     list_filter = ("owner",)
 
 
-# class Plan(admin.ModelAdmin):
-#     list_display = (
-#     "plan_name", "plan_start", "plan_end", "plan_event")
-#     list_filter = ("plan_name",)
+class RewardAdmin(admin.ModelAdmin):
+    list_display = ("name", "description", "image_url", "points")
+    list_filter = ("name",)
+
+
+class BadgeAdmin(admin.ModelAdmin):
+    list_display = ("name", "description", "image_url", "points")
+    list_filter = ("name",)
+
+
+class UserRewardAdmin(admin.ModelAdmin):
+    list_display = ("owner", "reward", "reward_points", "reward_date")
+    list_filter = ("owner",)
+
+
+class UserBadgeAdmin(admin.ModelAdmin):
+    list_display = ("owner", "badge", "badge_points", "badge_date")
+    list_filter = ("owner",)
+
+
+class PointRecordAdmin(admin.ModelAdmin):
+    list_display = ("owner", "points", "remark", "points_date")
+    list_filter = ("owner",)
+
+
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ("owner", "points", "badge")
+    list_filter = ("owner",)
+
+
 
 admin.site.register(Exercise, ExerciseAdmin)
 admin.site.register(Model_store, Model_storeAdmin)
@@ -80,3 +106,9 @@ admin.site.register(Schedule, ScheduleAdmin)
 admin.site.register(Wellbeing_user, Wellbeing_userAdmin)
 admin.site.register(Resource_store, Resource_storeAdmin)
 admin.site.register(UserSummary, UserSummaryAdmin)
+admin.site.register(Reward, RewardAdmin)
+admin.site.register(Badge, BadgeAdmin)
+admin.site.register(UserReward, UserRewardAdmin)
+admin.site.register(UserBadge, UserBadgeAdmin)
+admin.site.register(PointRecord, PointRecordAdmin)
+admin.site.register(Profile, ProfileAdmin)

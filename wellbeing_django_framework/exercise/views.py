@@ -38,8 +38,6 @@ class ExerciseList(generics.ListCreateAPIView):
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer
 
-    # def perform_create(self, serializer):
-    #     serializer.save(owner=self.request.user)
 
 class ExerciseDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Exercise.objects.all()
@@ -97,37 +95,29 @@ class ScheduleDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ScheduleSerializer
 
 
-# class UserSummaryList(generics.ListCreateAPIView):
-#     queryset = UserSummary.objects.all()
-#     serializer_class =UserSummarySerializer
-#     permission_classes = (IsAuthenticated,)
-#
-#     def perform_create(self, serializer):
-#         serializer.save(owner=self.request.user)
-
-# class UserSummaryDetail(generics.RetrieveAPIView):
-#     queryset = UserSummary.objects.all()
-#     serializer_class = UserSummarySerializer
-#     permission_classes = (IsAuthenticated,)
-
 
 class UserSummaryView(RetrieveUpdateAPIView):
     serializer_class = UserSummarySerializer
     permission_classes = (IsAuthenticated,)
 
+    # 每次获取用户积分信息的时候都重算一遍
     def get_object(self):
         queryset = self.get_queryset()
         user = self.request.user
+        # 判断数据库是否存在用户的积分信息，如果不存在，则创建
         if len(queryset) > 0:
             user_summary_obj = queryset[0]
         else:
             user_summary_obj = UserSummary.objects.create(
                 owner = self.request.user
             )
+        # 从用户的运动记录里面计算运动总时长，运动总卡路里，运动总分数
         actionset = Action.objects.filter(owner=user)
         user_summary_obj.total_score = sum([x.score for x in actionset])
         user_summary_obj.total_calories = sum([x.calories for x in actionset])
         user_summary_obj.total_time = sum([x.end_time - x.start_time for x in actionset], dt.timedelta()).seconds
+
+        # 计算用户当月运动总时长，运动总卡路里，运动总分数
         this_month = dt.datetime.now().month
         current_month_score = 0
         current_month_calories = 0
@@ -152,6 +142,89 @@ class UserSummaryView(RetrieveUpdateAPIView):
         user = self.request.user
         return UserSummary.objects.filter(owner=user)
 
+
+class RewardList(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Reward.objects.all()
+    serializer_class = RewardSerializer
+
+
+class RewardDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Reward.objects.all()
+    serializer_class = RewardSerializer
+
+
+class BadgeList(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Badge.objects.all()
+    serializer_class = BadgeSerializer
+
+
+class BadgeDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Badge.objects.all()
+    serializer_class = BadgeSerializer
+
+
+class UserRewardList(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = UserReward.objects.all()
+    serializer_class = UserRewardSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class UserRewardDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = UserReward.objects.all()
+    serializer_class = UserRewardSerializer
+
+
+class UserBadgeList(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = UserBadge.objects.all()
+    serializer_class = UserBadgeSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class UserBadgeDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = UserBadge.objects.all()
+    serializer_class = UserBadgeSerializer
+
+
+class PointRecordList(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = PointRecord.objects.all()
+    serializer_class = UserPointsSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class PointRecordDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = PointRecord.objects.all()
+    serializer_class = UserPointsSerializer
+
+
+class UserProfileView(RetrieveUpdateAPIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user.profile
+
+    def get_queryset(self):
+        """
+        This view should return the user profile of current user.
+        """
+        user = self.request.user
+        return Profile.objects.filter(owner=user)
 
 # class Model_storeDetail(generics.RetrieveUpdateDestroyAPIView):
 #     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]

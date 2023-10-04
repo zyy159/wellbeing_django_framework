@@ -255,8 +255,8 @@ EMAIL_HOST = 'smtp.office365.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'wellbeing_gallery@outlook.com'
-EMAIL_HOST_PASSWORD = get_env_value('EMAIL_HOST_PASSWORD')
-#EMAIL_HOST_PASSWORD = 'mtwswjviradmmsnj'
+# EMAIL_HOST_PASSWORD = get_env_value('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = 'exeptughvqxlnmpb'
 DEFAULT_FROM_EMAIL = 'wellbeing_gallery@outlook.com'
 EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/'
 

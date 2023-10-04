@@ -9,17 +9,26 @@ urlpatterns = [
 
     path('actions/', ActionList.as_view(), name='action-list'),
     path('actions/<int:pk>/', ActionDetail.as_view(), name='action-detail'),
-    # path('models/', Model_storeList.as_view(), name='models-list'),
+
     path('model_store/<int:pk>/', Model_storeDetail.as_view(), name='model_store-detail'),
     path('model_store/', views.Model_storeList.as_view(), name='model_store-list'),
-    # path('actions_list/', views.actions_list, name='actions_list'),
-    # path('user_summary/', views.get_user_summary, name='user_summary'),
+
     path('schedules/', ScheduleList.as_view(), name='schedule-list'),
     path('schedules/<int:pk>/', ScheduleDetail.as_view(), name='schedule-detail'),
 
-    # path('user_summary/', UserSummaryList.as_view(), name='usersummary-list'),
     path('usersummary/', UserSummaryView.as_view(), name='usersummary'),
-    # path('user_summary/<int:pk>/', UserSummaryDetail.as_view(), name='usersummary-detail'),
+    path('rewards/', RewardList.as_view(), name='reward-list'),
+    path('rewards/<int:pk>/', RewardDetail.as_view(), name='reward-detail'),
+    path('badges/', BadgeList.as_view(), name='badge-list'),
+    path('badges/<int:pk>/', BadgeDetail.as_view(), name='badge-detail'),
+    path('userrewards/', UserRewardList.as_view(), name='userreward-list'),
+    path('userrewards/<int:pk>/', UserRewardDetail.as_view(), name='userreward-detail'),
+    path('userbadges/', UserBadgeList.as_view(), name='userbadge-list'),
+    path('userbadges/<int:pk>/', UserBadgeDetail.as_view(), name='userbadge-detail'),
+    path('pointrecords/', PointRecordList.as_view(), name='pointrecord-list'),
+    path('pointrecords/<int:pk>/', PointRecordDetail.as_view(), name='pointrecord-detail'),
+    path('userprofile/', UserProfileView.as_view(), name='userprofile'),
+
 
     path('create_user/', views.create_user, name='create_user'),
     # { POST

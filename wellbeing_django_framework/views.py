@@ -48,7 +48,8 @@ def api_root(request, format=None):
         'badges': reverse('badge-list', request=request, format=format),
         'userrewards': reverse('userreward-list', request=request, format=format),
         'userbadges': reverse('userbadge-list', request=request, format=format),
-        'userpoints': reverse('userpoints-list', request=request, format=format),
+        'pointrecords': reverse('pointrecord-list', request=request, format=format),
+        'userprofile': reverse('userprofile', request=request, format=format),
     })
 
 

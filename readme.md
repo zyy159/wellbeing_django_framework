@@ -69,3 +69,18 @@ nohup sudo uwsgi --ini wellbeing_django_framework/uwsgi.ini &
 
 ## reload nwsgi
 touch /opt/wellbeing_django_framework/uwsgi_reload
+
+
+# 为所有 user 生成 Profile
+首先，打开 Django shell：
+
+python manage.py shell
+
+然后，导入你需要的模型并为每个用户创建一个 Profile：
+
+from django.contrib.auth.models import User
+from wellbeing_django_framework.exercise.models import Profile
+
+for user in User.objects.all():
+    Profile.objects.get_or_create(owner=user)
+这个脚本会遍历所有的用户，并为每个用户创建一个 Profile。get_or_create 方法会尝试获取一个已经存在的 Profile，如果不存在，它就会创建一个新的 Profile。
