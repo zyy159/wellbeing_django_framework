@@ -121,6 +121,11 @@ class Action(models.Model):
                 self.owner.profile.save()
                 UserBadge.objects.create(owner=self.owner, badge=badge, badge_points=badge.points)
 
+        self.owner.usersummary.total_score = self.owner.usersummary.total_score + self.score
+        self.owner.usersummary.total_calories = self.owner.usersummary.total_calories + self.calories
+        self.owner.usersummary.total_time = self.owner.usersummary.total_time + sum([self.end_time - self.start_time], timedelta()).total_seconds()
+        self.owner.usersummary.save()
+
     def is_seven_days_active(self):
         # 获取当前时间的前7天日期
         seven_days_ago = timezone.now() - timedelta(days=7)
@@ -145,7 +150,7 @@ class Action(models.Model):
 
 
 class UserSummary(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.OneToOneField(User, on_delete=models.CASCADE)
     total_score = models.IntegerField(default=0)
     total_calories = models.IntegerField(default=0)
     total_time = models.IntegerField(default=0)
@@ -169,6 +174,10 @@ class Badge(models.Model):
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def get_default(cls):
+        return cls.objects.order_by('points').first()
 
 
 
@@ -201,8 +210,16 @@ class Profile(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
     points = models.IntegerField(default=0)
     used_points = models.IntegerField(default=0)
-    badge = models.ForeignKey(Badge, on_delete=models.SET_NULL, null=True)
+    badge = models.ForeignKey(Badge, on_delete=models.SET_NULL, null=True, default=Badge.get_default)
 
+
+class Like(models.Model):
+    liker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes_given')
+    likee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes_received')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('liker', 'likee')
 
 # Create your models here.
 # class Motion(models.Model):

@@ -135,6 +135,34 @@ class UserPointsSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
+    email = serializers.CharField(source='owner.email')
+    likes_received = serializers.CharField(source='owner.likes_received.count')
+    likers = serializers.SerializerMethodField()
+    total_score = serializers.ReadOnlyField(source='owner.usersummary.total_score')
+    total_calories = serializers.ReadOnlyField(source='owner.usersummary.total_calories')
+    total_time = serializers.ReadOnlyField(source='owner.usersummary.total_time')
     class Meta:
         model = Profile
-        fields = ['id', 'owner', 'points', 'used_points', 'badge']
+        fields = ['id', 'owner', 'email', 'points', 'used_points', 'badge', 'likes_received', 'likers', 'total_score', 'total_calories', 'total_time']
+
+    def get_likers(self, obj):
+        return [like.liker.username for like in obj.owner.likes_received.all()]
+
+
+class UserListSerializer(serializers.HyperlinkedModelSerializer):
+    points = serializers.IntegerField(source='profile.points')
+    badge = serializers.CharField(source='profile.badge.image_url')
+    total_score = serializers.IntegerField(source='usersummary.total_score')
+    total_calories = serializers.IntegerField(source='usersummary.total_calories')
+    total_time = serializers.IntegerField(source='usersummary.total_time')
+    likes_received = serializers.IntegerField(source='likes_received.count')
+
+    class Meta:
+        model = User
+        fields = ['pk', 'username', 'points', 'badge', 'total_score', 'total_calories', 'total_time', 'likes_received']
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = '__all__'

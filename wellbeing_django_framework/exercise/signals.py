@@ -5,7 +5,7 @@ from django.contrib.auth.signals import user_logged_in
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from wellbeing_django_framework.exercise.models import Profile, PointRecord, Badge, UserBadge
+from wellbeing_django_framework.exercise.models import Profile, PointRecord, Badge, UserBadge, UserSummary
 
 
 def add_points(sender, user, request, **kwargs):
@@ -38,7 +38,9 @@ user_logged_in.connect(add_points)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(owner=instance)
+        UserSummary.objects.create(owner=instance)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+    instance.usersummary.save()

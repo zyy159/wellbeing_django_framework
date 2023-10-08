@@ -28,6 +28,8 @@ urlpatterns = [
     path('pointrecords/', PointRecordList.as_view(), name='pointrecord-list'),
     path('pointrecords/<int:pk>/', PointRecordDetail.as_view(), name='pointrecord-detail'),
     path('userprofile/', UserProfileView.as_view(), name='userprofile'),
+    path('userlist/', UserListView.as_view(), name='userlist'),
+    path('like/', LikeView.as_view(), name='like'),
 
 
     path('create_user/', views.create_user, name='create_user'),

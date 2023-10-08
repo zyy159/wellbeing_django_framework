@@ -11,7 +11,7 @@ from django.http import HttpResponse,JsonResponse, Http404
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, RetrieveAPIView, GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from .processers import SendAppointmentsThread
@@ -115,7 +115,7 @@ class UserSummaryView(RetrieveUpdateAPIView):
         actionset = Action.objects.filter(owner=user)
         user_summary_obj.total_score = sum([x.score for x in actionset])
         user_summary_obj.total_calories = sum([x.calories for x in actionset])
-        user_summary_obj.total_time = sum([x.end_time - x.start_time for x in actionset], dt.timedelta()).seconds
+        user_summary_obj.total_time = sum([x.end_time - x.start_time for x in actionset], dt.timedelta()).total_seconds()
 
         # 计算用户当月运动总时长，运动总卡路里，运动总分数
         this_month = dt.datetime.now().month
@@ -225,6 +225,51 @@ class UserProfileView(RetrieveUpdateAPIView):
         """
         user = self.request.user
         return Profile.objects.filter(owner=user)
+
+
+class UserListView(GenericAPIView):
+    serializer_class = UserListSerializer
+
+    def get_queryset(self):
+        sort_by = self.request.query_params.get('sort_by', 'points')
+        if sort_by == 'points':
+            return User.objects.order_by('-profile__points')
+        elif sort_by == 'total_score':
+            return User.objects.order_by('-usersummary__total_score')
+        elif sort_by == 'total_time':
+            return User.objects.order_by('-usersummary__total_time')
+        elif sort_by == 'total_calories':
+            return User.objects.order_by('-usersummary__total_calories')
+        else:
+            return User.objects.none()
+
+    def get(self, request):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+
+class LikeView(GenericAPIView):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+
+    def post(self, request):
+        try:
+            liker = User.objects.get(pk=request.data['liker'])
+            likee = User.objects.get(pk=request.data['likee'])
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if liker == likee:
+            return Response({'error': 'You cannot like yourself.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        like, created = Like.objects.get_or_create(liker=liker, likee=likee)
+
+        if not created:
+            return Response({'error': 'You have already liked this user.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.serializer_class(like)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 # class Model_storeDetail(generics.RetrieveUpdateDestroyAPIView):
 #     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]

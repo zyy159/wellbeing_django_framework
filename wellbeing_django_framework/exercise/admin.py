@@ -98,6 +98,11 @@ class ProfileAdmin(admin.ModelAdmin):
     list_filter = ("owner",)
 
 
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ("liker", "likee", "created_at")
+    list_filter = ("liker",)
+
+
 
 admin.site.register(Exercise, ExerciseAdmin)
 admin.site.register(Model_store, Model_storeAdmin)
@@ -112,3 +117,4 @@ admin.site.register(UserReward, UserRewardAdmin)
 admin.site.register(UserBadge, UserBadgeAdmin)
 admin.site.register(PointRecord, PointRecordAdmin)
 admin.site.register(Profile, ProfileAdmin)
+admin.site.register(Like, LikeAdmin)

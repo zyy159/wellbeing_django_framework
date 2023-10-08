@@ -148,7 +148,22 @@ DATABASES_PROD = {
     }
 }
 
-DATABASES = DATABASES_PROD if os.name == 'posix' else DATABASES_LOCAL
+DATABASES_DEV = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        # 'NAME': 'WB02',
+        # 'USER': 'postgres',
+        # 'PASSWORD': 'postgres',
+        # 'HOST': 'localhost',
+        'NAME': 'wellbeingDB_DEV',
+        'USER': 'Wellbeing',
+        'PASSWORD': get_env_value('DATABASE_PWD'),
+        'HOST': 'pgm-bp1o823j99b9j1o6.pg.rds.aliyuncs.com',
+        'PORT': '5432',
+    }
+}
+
+DATABASES = DATABASES_DEV if os.path.splitext(os.path.basename(os.getcwd()))[0].endswith('_dev') else DATABASES_PROD if os.name == 'posix' else DATABASES_LOCAL
 
 
 # Password validation

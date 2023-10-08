@@ -80,7 +80,16 @@ python manage.py shell
 
 from django.contrib.auth.models import User
 from wellbeing_django_framework.exercise.models import Profile
+from wellbeing_django_framework.exercise.models import UserSummary
 
 for user in User.objects.all():
+    UserSummary.objects.get_or_create(owner=user)
     Profile.objects.get_or_create(owner=user)
 这个脚本会遍历所有的用户，并为每个用户创建一个 Profile。get_or_create 方法会尝试获取一个已经存在的 Profile，如果不存在，它就会创建一个新的 Profile。
+
+
+# 备份DB 数据
+python manage.py dumpdata --exclude=exercise.Profile --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 2 > db.json
+
+# 恢复DB 数据
+python manage.py loaddata db.json
