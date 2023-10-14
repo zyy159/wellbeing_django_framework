@@ -52,7 +52,7 @@ LOGGING = {
 }
 
 
-ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'localhost', '47.97.104.79', 'wellbeing.htcangelfund.com']
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'localhost', '47.97.104.79', 'wellbeing.htcangelfund.com', '192.168.3.5']
 
 # CSRF_TRUSTED_ORIGINS = ['127.0.0.1', '0.0.0.0', 'localhost', '47.97.104.79']
 CSRF_TRUSTED_ORIGINS = ['*']
@@ -89,6 +89,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'wellbeing_django_framework.exercise.middleware.AddPointsMiddleware',
+    'wellbeing_django_framework.exercise.middleware.LocalhostOnlyMiddleware',
 ]
 
 ROOT_URLCONF = 'wellbeing_django_framework.urls'
@@ -192,8 +194,8 @@ REST_FRAMEWORK = {
     #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     # ],
     'DEFAULT_PERMISSION_CLASSES': [
-        # 'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.AllowAny'
+        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.AllowAny'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',

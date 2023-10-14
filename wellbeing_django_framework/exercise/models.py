@@ -70,6 +70,7 @@ class Schedule(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     sub_schedules = encrypt(models.TextField())
+    location = encrypt(models.TextField(default='front end url'))
 
     def get_exercises(self):
         exercises_names = [x.name for x in self.exercises.all()]

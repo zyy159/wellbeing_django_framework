@@ -75,7 +75,7 @@ class ScheduleSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Schedule
-        fields = ['url', 'id', 'name', 'owner', 'exercises', "start_time", "end_time", "sub_schedules"]
+        fields = ['url', 'id', 'name', 'owner', 'exercises', "start_time", "end_time", "sub_schedules", "location"]
 
 
 class UserSummarySerializer(serializers.HyperlinkedModelSerializer):
@@ -137,16 +137,20 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     email = serializers.CharField(source='owner.email')
     likes_received = serializers.CharField(source='owner.likes_received.count')
-    likers = serializers.SerializerMethodField()
+    likers = serializers.SerializerMethodField('get_likers')
+    likees = serializers.SerializerMethodField('get_likees')
     total_score = serializers.ReadOnlyField(source='owner.usersummary.total_score')
     total_calories = serializers.ReadOnlyField(source='owner.usersummary.total_calories')
     total_time = serializers.ReadOnlyField(source='owner.usersummary.total_time')
     class Meta:
         model = Profile
-        fields = ['id', 'owner', 'email', 'points', 'used_points', 'badge', 'likes_received', 'likers', 'total_score', 'total_calories', 'total_time']
+        fields = ['id', 'owner', 'email', 'points', 'used_points', 'badge', 'likes_received', 'likers', 'likees', 'total_score', 'total_calories', 'total_time']
 
     def get_likers(self, obj):
-        return [like.liker.username for like in obj.owner.likes_received.all()]
+        return [like.liker.id for like in obj.owner.likes_received.all()]
+
+    def get_likees(self, obj):
+        return [like.likee.id for like in obj.owner.likes_given.all()]
 
 
 class UserListSerializer(serializers.HyperlinkedModelSerializer):

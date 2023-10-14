@@ -67,7 +67,7 @@ class Model_storeDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = Model_storeSerializer
 
 class ScheduleList(generics.ListCreateAPIView):
-    queryset = Schedule.objects.all()
+    # queryset = Schedule.objects.all()
     serializer_class =ScheduleSerializer
 
     def perform_create(self, serializer):
@@ -76,7 +76,8 @@ class ScheduleList(generics.ListCreateAPIView):
         print(attendee_email)
         sub_schedule = serializer.data["sub_schedules"]
         print(sub_schedule)
-        location = "front end url for starting the exercises of this schedule"
+        location = serializer.data["location"]
+        # location = "front end url for starting the exercises of this schedule"
         # hardcode for testing d
         # schedule = """[{"start_time": "2023-06-22T15:00:00Z", "end_time": "2023-06-22T15:30:00Z"},
         # {"start_time": "2023-06-23T15:00:00Z", "end_time": "2023-06-23T15:30:00Z"},
@@ -88,6 +89,10 @@ class ScheduleList(generics.ListCreateAPIView):
         for exercise in exercises:
             exercise.popularity = exercise.popularity + 1
             exercise.save()
+
+    def get_queryset(self):
+        user = self.request.user
+        return Schedule.objects.filter(owner=user)
 
 
 class ScheduleDetail(generics.RetrieveUpdateDestroyAPIView):
