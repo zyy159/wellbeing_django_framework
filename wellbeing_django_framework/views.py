@@ -22,7 +22,7 @@ from rest_framework import renderers
 def api_root(request, format=None):
     return Response({
         # 'users': reverse('user-list', request=request, format=format),
-        'snippets': reverse('snippet-list', request=request, format=format),
+        # 'snippets': reverse('snippet-list', request=request, format=format),
         'login': reverse('rest_login', request=request, format=format),
         'logout': reverse('rest_logout', request=request, format=format),
         'password_reset': reverse('rest_password_reset', request=request, format=format),

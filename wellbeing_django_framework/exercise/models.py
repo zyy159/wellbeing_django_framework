@@ -222,6 +222,18 @@ class Like(models.Model):
     class Meta:
         unique_together = ('liker', 'likee')
 
+
+class Invite(models.Model):
+    inviter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invites_sent')
+    invitee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invites_received')
+    created_at = models.DateTimeField(auto_now_add=True)
+    code = encrypt(models.TextField(default=''))
+
+    class Meta:
+        unique_together = ('inviter', 'invitee')
+
+
+
 # Create your models here.
 # class Motion(models.Model):
 #     motion_name = encrypt(models.CharField(max_length=100, blank=True, default=''))

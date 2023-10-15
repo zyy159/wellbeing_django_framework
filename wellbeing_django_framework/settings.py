@@ -90,7 +90,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'wellbeing_django_framework.exercise.middleware.AddPointsMiddleware',
-    'wellbeing_django_framework.exercise.middleware.LocalhostOnlyMiddleware',
 ]
 
 ROOT_URLCONF = 'wellbeing_django_framework.urls'
@@ -193,6 +192,13 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': [
     #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     # ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'action': '6/minute',
+        'schedule': '20/day',
+    },
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
         # 'rest_framework.permissions.AllowAny'
@@ -272,8 +278,8 @@ EMAIL_HOST = 'smtp.office365.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'wellbeing_gallery@outlook.com'
-EMAIL_HOST_PASSWORD = get_env_value('EMAIL_HOST_PASSWORD')
-# EMAIL_HOST_PASSWORD = ''
+# EMAIL_HOST_PASSWORD = get_env_value('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = 'exeptughvqxlnmpb'
 DEFAULT_FROM_EMAIL = 'wellbeing_gallery@outlook.com'
 EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/'
 

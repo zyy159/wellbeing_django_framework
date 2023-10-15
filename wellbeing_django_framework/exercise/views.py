@@ -34,16 +34,20 @@ from dateutil.rrule import rrule, DAILY
 
 
 # Create your views here.
-class ExerciseList(generics.ListCreateAPIView):
+class ExerciseList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer
 
 
-class ExerciseDetail(generics.RetrieveUpdateDestroyAPIView):
+class ExerciseDetail(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer
 
 class ActionList(generics.ListCreateAPIView):
+    throttle_scope = 'action'
+    permission_classes = (IsAuthenticated,)
     queryset = Action.objects.all()
     serializer_class = ActionSerializer
 
@@ -51,23 +55,27 @@ class ActionList(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 
-class ActionDetail(generics.RetrieveUpdateDestroyAPIView):
+class ActionDetail(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Action.objects.all()
     serializer_class = ActionSerializer
 #
-class Model_storeList(generics.ListCreateAPIView):
+class Model_storeList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Model_store.objects.all()
     serializer_class = Model_storeSerializer
 
     # def perform_create(self, serializer):
     #     serializer.save(owner=self.request.user)
 
-class Model_storeDetail(generics.RetrieveUpdateDestroyAPIView):
+class Model_storeDetail(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Model_store.objects.all()
     serializer_class = Model_storeSerializer
 
 class ScheduleList(generics.ListCreateAPIView):
-    # queryset = Schedule.objects.all()
+    throttle_scope = 'action'
+    permission_classes = (IsAuthenticated,)
     serializer_class =ScheduleSerializer
 
     def perform_create(self, serializer):
@@ -96,12 +104,13 @@ class ScheduleList(generics.ListCreateAPIView):
 
 
 class ScheduleDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
 
 
 
-class UserSummaryView(RetrieveUpdateAPIView):
+class UserSummaryView(RetrieveAPIView):
     serializer_class = UserSummarySerializer
     permission_classes = (IsAuthenticated,)
 
@@ -148,76 +157,94 @@ class UserSummaryView(RetrieveUpdateAPIView):
         return UserSummary.objects.filter(owner=user)
 
 
-class RewardList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+class RewardList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Reward.objects.all()
     serializer_class = RewardSerializer
 
 
-class RewardDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+class RewardDetail(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Reward.objects.all()
     serializer_class = RewardSerializer
 
 
-class BadgeList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+class BadgeList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Badge.objects.all()
     serializer_class = BadgeSerializer
 
 
-class BadgeDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+class BadgeDetail(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Badge.objects.all()
     serializer_class = BadgeSerializer
 
 
 class UserRewardList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = UserReward.objects.all()
+    permission_classes = (IsAuthenticated,)
+    # queryset = UserReward.objects.all()
     serializer_class = UserRewardSerializer
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def get_queryset(self):
+        user = self.request.user
+        return UserReward.objects.filter(owner=user)
 
 
 class UserRewardDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = UserReward.objects.all()
+    permission_classes = (IsAuthenticated,)
+    queryset = Badge.objects.all()
     serializer_class = UserRewardSerializer
 
 
-class UserBadgeList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+class UserBadgeList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = UserBadge.objects.all()
     serializer_class = UserBadgeSerializer
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+    def get_queryset(self):
+        user = self.request.user
+        return UserBadge.objects.filter(owner=user)
 
-class UserBadgeDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = UserBadge.objects.all()
+
+class UserBadgeDetail(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
     serializer_class = UserBadgeSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        return UserBadge.objects.filter(owner=user)
 
-class PointRecordList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class PointRecordList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = PointRecord.objects.all()
     serializer_class = UserPointsSerializer
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+    def get_queryset(self):
+        user = self.request.user
+        return PointRecord.objects.filter(owner=user)
 
-class PointRecordDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = PointRecord.objects.all()
+
+class PointRecordDetail(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
     serializer_class = UserPointsSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        return PointRecord.objects.filter(owner=user)
 
-class UserProfileView(RetrieveUpdateAPIView):
+
+class UserProfileView(RetrieveAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -233,6 +260,7 @@ class UserProfileView(RetrieveUpdateAPIView):
 
 
 class UserListView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
     serializer_class = UserListSerializer
 
     def get_queryset(self):
@@ -255,12 +283,14 @@ class UserListView(GenericAPIView):
 
 
 class LikeView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
 
     def post(self, request):
         try:
-            liker = User.objects.get(pk=request.data['liker'])
+            # liker = User.objects.get(pk=request.data['liker'])
+            liker = User.objects.get(pk=self.request.user.id)
             likee = User.objects.get(pk=request.data['likee'])
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -311,6 +341,7 @@ class LikeView(GenericAPIView):
 
 
 class PopularActionList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Model_store.objects.all().order_by('-popularity')[:5]
     serializer_class = ActionSerializer
 

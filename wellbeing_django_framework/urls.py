@@ -30,7 +30,6 @@ from allauth.account.views import confirm_email
 # router.register(r'groups', views.GroupViewSet)
 
 snippets_urlpatterns = [
-    path('api/', views.api_root),
     path('api/snippets/', views.SnippetList.as_view(), name='snippet-list'),
     path('api/snippets/<int:pk>/', views.SnippetDetail.as_view(), name='snippet-detail'),
     path('api/snippets/<int:pk>/highlight/', views.SnippetHighlight.as_view(), name='snippet-highlight'),
@@ -58,13 +57,11 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^SignIn/',views.login),
     url(r'^SignUp/',views.register),
-    # path('', include(router.urls)),
-    path('', include(snippets_urlpatterns)),
+    # path('', include(snippets_urlpatterns)),
+    path('api/', views.api_root),
     path('', include(auth_urlpatterns)),
     path('', include(exercise_urlpatterns)),
     path('api-auth/', include('rest_framework.urls')),
-    # path('snippets/', views.snippet_list),
-    # path('snippets/<int:pk>/', views.snippet_detail),
     # ...
     # Use the `get_schema_view()` helper to add a `SchemaView` to project URLs.
     #   * `title` and `description` parameters are passed to `SchemaGenerator`.

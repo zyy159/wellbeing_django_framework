@@ -116,21 +116,21 @@ class UserRewardSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = UserReward
-        fields = ['id', 'owner', 'reward', 'reward_points', 'reward_date']
+        fields = ['url', 'id', 'owner', 'reward', 'reward_points', 'reward_date']
 
 
 class UserBadgeSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = UserBadge
-        fields = ['id', 'owner', 'badge', 'badge_points', 'badge_date']
+        fields = ['url', 'id', 'owner', 'badge', 'badge_points', 'badge_date']
 
 
 class UserPointsSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = PointRecord
-        fields = ['id', 'owner', 'points', 'remark', 'points_date']
+        fields = ['url', 'id', 'owner', 'points', 'remark', 'points_date']
 
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
