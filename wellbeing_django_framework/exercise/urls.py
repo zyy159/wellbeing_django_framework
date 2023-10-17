@@ -30,6 +30,8 @@ urlpatterns = [
     path('userprofile/', UserProfileView.as_view(), name='userprofile'),
     path('userlist/', UserListView.as_view(), name='userlist'),
     path('like/', LikeView.as_view(), name='like'),
+    path('invite/', InviteView.as_view(), name='invite'),
+    path('profile/<str:invite_code>/', ProfileInviteCodeView.as_view(), name='profile_invite'),
 
 
     path('create_user/', views.create_user, name='create_user'),

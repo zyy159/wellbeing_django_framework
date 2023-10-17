@@ -94,13 +94,17 @@ class PointRecordAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ("owner", "points", "badge")
+    list_display = ("owner", "points", "badge", "invite_code")
     list_filter = ("owner",)
 
 
 class LikeAdmin(admin.ModelAdmin):
     list_display = ("liker", "likee", "created_at")
     list_filter = ("liker",)
+
+class InviteAdmin(admin.ModelAdmin):
+    list_display = ("inviter", "invitee", "created_at", "code")
+    list_filter = ("inviter",)
 
 
 
@@ -118,3 +122,4 @@ admin.site.register(UserBadge, UserBadgeAdmin)
 admin.site.register(PointRecord, PointRecordAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Like, LikeAdmin)
+admin.site.register(Invite, InviteAdmin)

@@ -67,8 +67,8 @@ class SendAppointmentsThread(threading.Thread):
         self.attendee_email = attendee_email
         self.location = location
         self.organiser_email = EMAIL_HOST_USER
-        self.subj = 'Relex time'
-        self.body = """It is time to relex yourself!
+        self.subj = 'Relax time'
+        self.body = """It is time to relax yourself!
 
 Click {} to start exercise!
                         """.format(self.location)

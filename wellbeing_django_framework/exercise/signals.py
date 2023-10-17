@@ -10,8 +10,10 @@ from wellbeing_django_framework.exercise.models import Profile, PointRecord, Bad
 
 def add_points(sender, user, request, **kwargs):
     # 获取用户所有的积分记录
-    point_records = PointRecord.objects.filter(owner=user).order_by('-points_date')
+    if not user.is_authenticated: # 检查用户是否登录
+        return
 
+    point_records = PointRecord.objects.filter(owner=user).order_by('-points_date')
     # 找到最后一次登录获得积分的记录
     last_login_point_record = None
     for record in point_records:

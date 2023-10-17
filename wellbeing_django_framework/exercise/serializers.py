@@ -142,15 +142,20 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     total_score = serializers.ReadOnlyField(source='owner.usersummary.total_score')
     total_calories = serializers.ReadOnlyField(source='owner.usersummary.total_calories')
     total_time = serializers.ReadOnlyField(source='owner.usersummary.total_time')
+    invitees = serializers.SerializerMethodField('get_invitees')
+
     class Meta:
         model = Profile
-        fields = ['id', 'owner', 'email', 'points', 'used_points', 'badge', 'likes_received', 'likers', 'likees', 'total_score', 'total_calories', 'total_time']
+        fields = ['id', 'owner', 'email', 'points', 'used_points', 'badge', 'likes_received', 'likers', 'likees', 'total_score', 'total_calories', 'total_time', 'invite_code', 'invitees']
 
     def get_likers(self, obj):
         return [like.liker.id for like in obj.owner.likes_received.all()]
 
     def get_likees(self, obj):
         return [like.likee.id for like in obj.owner.likes_given.all()]
+
+    def get_invitees(self, obj):
+        return [invite.invitee.username for invite in obj.owner.invites_sent.all()]
 
 
 class UserListSerializer(serializers.HyperlinkedModelSerializer):
@@ -160,13 +165,20 @@ class UserListSerializer(serializers.HyperlinkedModelSerializer):
     total_calories = serializers.IntegerField(source='usersummary.total_calories')
     total_time = serializers.IntegerField(source='usersummary.total_time')
     likes_received = serializers.IntegerField(source='likes_received.count')
+    invites_sent = serializers.IntegerField(source='invites_sent.count')
 
     class Meta:
         model = User
-        fields = ['pk', 'username', 'points', 'badge', 'total_score', 'total_calories', 'total_time', 'likes_received']
+        fields = ['pk', 'username', 'points', 'badge', 'total_score', 'total_calories', 'total_time', 'likes_received', 'invites_sent']
 
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = '__all__'
+
+class InviteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Invite
+        fields = ['code']
+

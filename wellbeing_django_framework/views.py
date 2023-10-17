@@ -52,6 +52,8 @@ def api_root(request, format=None):
         'userprofile': reverse('userprofile', request=request, format=format),
         'userlist': reverse('userlist', request=request, format=format),
         'like': reverse('like', request=request, format=format),
+        'invite': reverse('invite', request=request, format=format),
+        # 'profile_invite': reverse('profile_invite', request=request, format=format),
     })
 
 

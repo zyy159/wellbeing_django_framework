@@ -11,8 +11,8 @@ from django.http import HttpResponse,JsonResponse, Http404
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
-from rest_framework.generics import RetrieveUpdateAPIView, RetrieveAPIView, GenericAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import RetrieveUpdateAPIView, RetrieveAPIView, GenericAPIView, get_object_or_404
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from .processers import SendAppointmentsThread
 from .serializers import *
@@ -259,6 +259,15 @@ class UserProfileView(RetrieveAPIView):
         return Profile.objects.filter(owner=user)
 
 
+class ProfileInviteCodeView(RetrieveAPIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = (AllowAny,)
+
+    def get_object(self):
+        invite_code = self.kwargs.get('invite_code')
+        return get_object_or_404(Profile, invite_code=invite_code)
+
+
 class UserListView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = UserListSerializer
@@ -273,6 +282,8 @@ class UserListView(GenericAPIView):
             return User.objects.order_by('-usersummary__total_time')
         elif sort_by == 'total_calories':
             return User.objects.order_by('-usersummary__total_calories')
+        elif sort_by == 'invites_sent':
+            return User.objects.annotate(num_invites=Count('invites_sent')).order_by('-num_invites')
         else:
             return User.objects.none()
 
@@ -305,6 +316,37 @@ class LikeView(GenericAPIView):
 
         serializer = self.serializer_class(like)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class InviteView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Invite.objects.all()
+    serializer_class = InviteSerializer
+
+    def post(self, request):
+        try:
+            invitee = User.objects.get(pk=self.request.user.id)
+            code = request.data['code']
+            if code:
+                inviter = Profile.objects.get(invite_code=code).owner
+            else:
+                return Response({'error': 'Invite code can not be blank.'}, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        except Profile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if invitee == inviter:
+            return Response({'error': 'You cannot invite yourself.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        invite, created = Invite.objects.get_or_create(inviter=inviter, invitee=invitee, code=code)
+
+        if not created:
+            return Response({'error': 'You have already been invited.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.serializer_class(Invite)
+        return Response({'success': 'Invite recorded.'}, status=status.HTTP_201_CREATED)
+
 
 # class Model_storeDetail(generics.RetrieveUpdateDestroyAPIView):
 #     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]

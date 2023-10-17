@@ -1,3 +1,6 @@
+import random
+import string
+
 from django.db import models
 from django_cryptography.fields import encrypt
 from django.contrib.auth.models import User
@@ -212,6 +215,20 @@ class Profile(models.Model):
     points = models.IntegerField(default=0)
     used_points = models.IntegerField(default=0)
     badge = models.ForeignKey(Badge, on_delete=models.SET_NULL, null=True, default=Badge.get_default)
+    invite_code = models.CharField(max_length=10, default='')
+
+
+    def generate_unique_invite_code(self):
+        invite_code  = ''.join(random.sample(string.ascii_letters + string.digits, 10))
+        while Profile.objects.filter(invite_code=invite_code).exists():
+            invite_code = ''.join(random.sample(string.ascii_letters + string.digits, 10))
+        return invite_code
+
+    def save(self, *args, **kwargs):
+        if not self.invite_code:  # 如果是新创建的对象
+            self.invite_code = self.generate_unique_invite_code()
+
+        super().save(*args, **kwargs)
 
 
 class Like(models.Model):
@@ -227,10 +244,27 @@ class Invite(models.Model):
     inviter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invites_sent')
     invitee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invites_received')
     created_at = models.DateTimeField(auto_now_add=True)
-    code = encrypt(models.TextField(default=''))
+    code = models.TextField(default='')
 
     class Meta:
         unique_together = ('inviter', 'invitee')
+
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        super().save(force_insert, force_update, using, update_fields)
+        # 邀请新用户 加 40 分
+        self.inviter.profile.points += 40
+        self.inviter.profile.save()
+        PointRecord.objects.create(owner=self.inviter, points=40, remark=f'Invite new user.')
+        # 如果分数达到预定的各等级的分数，则获得该等级
+
+        badges = Badge.objects.all().order_by('points')
+        for badge in badges:
+            if self.inviter.profile.points >= badge.points and self.inviter.profile.badge.points < badge.points:
+                self.inviter.profile.badge = badge
+                self.inviter.profile.save()
+                UserBadge.objects.create(owner=self.inviter, badge=badge, badge_points=badge.points)
 
 
 
